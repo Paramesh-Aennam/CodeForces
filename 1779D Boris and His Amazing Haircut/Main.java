@@ -29,8 +29,9 @@ public class Main {
 }
 
 class Solution {
-    public boolean checkHaircutPossibiliy(int[] heights, int[] desired) {
+    public boolean checkHaircutPossibiliy(int[] heights, int[] desired, int[] blades) {
         int n = heights.length;
+        int m = blades.length;
 
     }
 }
