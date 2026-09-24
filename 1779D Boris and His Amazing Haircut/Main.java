@@ -23,7 +23,8 @@ public class Main {
             for(int i=0 ; i<m ; i++) {
                 blades[i] = fr.nextInt();
             }
-            boolean flag = checkHaircutPossibiliy(nums, desired, blades);
+            Solution sol = new Solution();
+            boolean flag = sol.checkHaircutPossibiliy(nums, desired, blades);
             out.println(flag ? "Yes" : "No");
         }
 
@@ -36,36 +37,40 @@ class Solution {
         int n = heights.length;
         int m = blades.length;
 
-        Stack<Integer> stk = new LinkedList<>();
+        Stack<Integer> stk = new Stack<>();
         Map<Integer, Integer> map = new HashMap<>();
 
         for(int i=0 ; i<m ; i++) {
             map.put(blades[i], map.getOrDefault(blades[i], 0) + 1);
         }
-
+        // System.out.println(map);
+        
         for(int i=0 ; i<n ; i++) {
             if(heights[i] < desired[i]) {
                 return false;
             }
-
-            while(desired[stk.peek()] < desired[i]) {
-                int desiredHeight = stk.pop();
+            
+            while(!stk.isEmpty() && desired[stk.peek()] < desired[i]) {
+                int desiredHeight = desired[stk.pop()];
                 if(map.getOrDefault(desiredHeight, -1) <= 0) {
+                    // System.out.println(i+", "+desiredHeight+": "+map);
                     return false;
                 }
-                map.put(desired[desiredHeight], map.getOrDefault(stk.pop(), 0) - 1);
+                map.put(desiredHeight, map.getOrDefault(desiredHeight, 0) - 1);
             }
-            if(desired[i] != heights[i]) {
-                stk.push(desired[i]);
+            if(desired[i] != heights[i] && (stk.isEmpty() || desired[stk.peek()] != desired[i])) {
+                stk.push(i);
             }
+            // System.out.println(stk);
         }
-
+        
         while(!stk.isEmpty()) {
-            int desiredHeight = stk.pop();
+            int desiredHeight = desired[stk.pop()];
             if(map.getOrDefault(desiredHeight, -1) <= 0) {
+                // System.out.println(map);
                 return false;
             }
-            map.put(desired[desiredHeight], map.getOrDefault(stk.pop(), 0) + 1);
+            map.put(desiredHeight, map.getOrDefault(desiredHeight, 0) + 1);
         }
 
         return true;
@@ -73,7 +78,7 @@ class Solution {
 }
 
 class FastReader {
-    BufferedRaeder br;
+    BufferedReader br;
     StringTokenizer st;
 
     FastReader() {
