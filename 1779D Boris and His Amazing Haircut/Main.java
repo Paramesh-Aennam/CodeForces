@@ -1,3 +1,6 @@
+import java.util.*;
+import java.io.*;
+
 public class Main {
     public static void main(String[] args) {
         FastReader fr = new FastReader();
@@ -21,7 +24,7 @@ public class Main {
                 blades[i] = fr.nextInt();
             }
             boolean flag = checkHaircutPossibiliy(nums, desired, blades);
-            out.println(flag);
+            out.println(flag ? "Yes" : "No");
         }
 
         out.flush();
@@ -33,6 +36,39 @@ class Solution {
         int n = heights.length;
         int m = blades.length;
 
+        Stack<Integer> stk = new LinkedList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for(int i=0 ; i<m ; i++) {
+            map.put(blades[i], map.getOrDefault(blades[i], 0) + 1);
+        }
+
+        for(int i=0 ; i<n ; i++) {
+            if(heights[i] < desired[i]) {
+                return false;
+            }
+
+            while(desired[stk.peek()] < desired[i]) {
+                int desiredHeight = stk.pop();
+                if(map.getOrDefault(desiredHeight, -1) <= 0) {
+                    return false;
+                }
+                map.put(desired[desiredHeight], map.getOrDefault(stk.pop(), 0) - 1);
+            }
+            if(desired[i] != heights[i]) {
+                stk.push(desired[i]);
+            }
+        }
+
+        while(!stk.isEmpty()) {
+            int desiredHeight = stk.pop();
+            if(map.getOrDefault(desiredHeight, -1) <= 0) {
+                return false;
+            }
+            map.put(desired[desiredHeight], map.getOrDefault(stk.pop(), 0) + 1);
+        }
+
+        return true;
     }
 }
 
